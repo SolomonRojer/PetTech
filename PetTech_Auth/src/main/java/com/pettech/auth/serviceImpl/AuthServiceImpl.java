@@ -13,10 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,16 +27,6 @@ import com.pettech.data.response.MessageResponse;
 import com.pettech.data.response.service.UserDetailsImpl;
 import com.pettech.auth.service.AuthService;
 
-//import com.example.demo.auth.service.AuthService;
-//import com.example.demo.data.dto.UserDto;
-//import com.example.demo.data.jwt.JwtUtils;
-//import com.example.demo.data.model.ERole;
-//import com.example.demo.data.model.Role;
-//import com.example.demo.data.model.userDetails;
-//import com.example.demo.data.repo.RoleRepository;
-//import com.example.demo.data.repo.UserRepository;
-//import com.example.demo.data.response.MessageResponse;
-//import com.example.demo.data.response.service.UserDetailsImpl;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -55,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
 	AuthenticationManager authenticationManager;
 	@Autowired
 	JwtUtils jwtUtils;
+	
 	@Override
 	public ResponseEntity<Object> createUsers(UserDto userDto) {
 		try {
@@ -104,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
 	}catch (Exception e) {
 		System.out.println(e.getLocalizedMessage());
 		return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
-				.status("problem adding user").build());		}	
+				.status("Login Failed").build());		}	
 	}
 
 }
