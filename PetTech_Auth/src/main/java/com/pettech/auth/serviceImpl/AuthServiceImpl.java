@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
 	AuthenticationManager authenticationManager;
 	@Autowired
 	JwtUtils jwtUtils;
-	
 	@Override
 	public ResponseEntity<Object> createUsers(UserDto userDto) {
 		try {
@@ -91,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
 	}catch (Exception e) {
 		System.out.println(e.getLocalizedMessage());
 		return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
-				.status("Login Failed").build());		}	
+				.status("problem adding user").build());		}	
 	}
 
 }
