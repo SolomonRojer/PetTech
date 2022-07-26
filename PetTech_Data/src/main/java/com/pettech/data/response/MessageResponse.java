@@ -10,6 +10,7 @@ public class MessageResponse {
 	private String status;
 	private int response;
 	private Object data;
+	
 	public MessageResponse(String status, int response, Object data) {
 		super();
 		this.status = status;
@@ -20,6 +21,9 @@ public class MessageResponse {
 		super();
 		this.status = status;
 		this.response = response;
+	}
+	public MessageResponse() {
+		super();
 	}
 
 }

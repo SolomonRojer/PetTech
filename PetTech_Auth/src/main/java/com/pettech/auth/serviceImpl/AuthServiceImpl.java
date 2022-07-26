@@ -2,6 +2,7 @@ package com.pettech.auth.serviceImpl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,8 +27,8 @@ import com.pettech.data.repo.RoleRepository;
 import com.pettech.data.repo.UserRepository;
 import com.pettech.data.response.MessageResponse;
 import com.pettech.data.response.service.UserDetailsImpl;
+import com.pettech.auth.responseDTO.loginResponse;
 import com.pettech.auth.service.AuthService;
-
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -42,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
 	AuthenticationManager authenticationManager;
 	@Autowired
 	JwtUtils jwtUtils;
+
 	@Override
 	public ResponseEntity<Object> createUsers(UserDto userDto) {
 		try {
@@ -50,48 +52,65 @@ public class AuthServiceImpl implements AuthService {
 			if (userDto.getUserType().equalsIgnoreCase("ROLE_USER")) {
 				Role empRole = roleRepo.findByName(ERole.ROLE_USER);
 				roles.add(empRole);
-			}else if(userDto.getUserType().equalsIgnoreCase("ROLE_ADMIN")) {
+			} else if (userDto.getUserType().equalsIgnoreCase("ROLE_ADMIN")) {
 				Role empRole = roleRepo.findByName(ERole.ROLE_ADMIN);
 				roles.add(empRole);
 			}
-			userDetails user=  userDetails.builder().name(userDto.getName()).email(userDto.getEmail()).password( encoder.encode(userDto.getPassword())).confirmPassword(userDto.getConfirmPassword()).gender(userDto.getGender()).number(userDto.getNumber()).userName(userDto.getUserName()).roles(roles).build();
-			
+
+			if (!(userDto.getPassword().equals(userDto.getConfirmPassword()))) {
+				return ResponseEntity.ok(MessageResponse.builder().status("password does not match")
+						.response(HttpStatus.PARTIAL_CONTENT.value()).build());
+			}
+			userDetails user = userDetails.builder().name(userDto.getName()).email(userDto.getEmail())
+					.userStatus("ACTIVE").password(encoder.encode(userDto.getPassword())).gender(userDto.getGender())
+					.number(userDto.getNumber()).userName(userDto.getUserName()).roles(roles).build();
+
 			userRepo.save(user);
 			return ResponseEntity.ok(MessageResponse.builder().status("user added sucessfully")
 					.response(HttpStatus.OK.value()).data(user).build());
-			
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
-					.status("problem adding user").build());		}
+					.status("problem adding user").build());
+		}
 	}
 
 	@Override
 	public ResponseEntity<Object> validateLoginParam(UserDto userDTO) {
-	try {
-		userDetails users = userRepo.findByEmail(userDTO.getEmail());
-		if (!(userDTO.getPassword() != null
-				&& userDTO.getPassword().equalsIgnoreCase(users.getConfirmPassword()))) {
-			return ResponseEntity.ok(MessageResponse.builder().status("wrong password")
-					.response(HttpStatus.BAD_GATEWAY.value()).build());		}
-		
-		String encryptedPassword = encoder.encode(userDTO.getPassword());
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(userDTO.getUserName(), userDTO.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-		System.out.println("bearer token:" + jwt);
-		users.setUserStatus("ACTIVE");
-		userRepo.save(users);
-		return ResponseEntity.ok(MessageResponse.builder().status(jwt)
-				.response(HttpStatus.OK.value()).data(users).build());
-	}catch (Exception e) {
-		System.out.println(e.getLocalizedMessage());
-		return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
-				.status("problem adding user").build());		}	
+		try {
+			userDetails users = userRepo.findByEmail(userDTO.getEmail());
+			if ((users.getUserStatus().equals("INACTIVE")) || (users.getUserStatus() == null)) {
+				return ResponseEntity.ok(MessageResponse.builder().status("Unauthorized User")
+						.response(HttpStatus.BAD_REQUEST.value()).build());
+			}
+
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(userDTO.getUserName(), userDTO.getPassword()));
+
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
+			String jwt = jwtUtils.generateJwtToken(authentication);
+
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			if (Objects.isNull(userDetails)) {
+				throw new RuntimeException("User not found");
+			}
+
+			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+					.collect(Collectors.toList());
+//			System.out.println("bearer token:" + jwt + roles);
+			users.setUserStatus("ACTIVE");
+
+			return ResponseEntity
+					.ok(loginResponse.builder().jwtToken("bearer token:" + jwt).email(users.getEmail()).name(users.getName())
+							.userName(users.getUserName()).number(users.getNumber()).userStatus(users.getUserStatus())
+							.build());
+			
+		} catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+			return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
+					.status(e.getLocalizedMessage()).build());
+		}
 	}
 
 }
