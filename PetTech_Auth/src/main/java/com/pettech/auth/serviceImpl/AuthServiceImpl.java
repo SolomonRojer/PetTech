@@ -48,6 +48,13 @@ public class AuthServiceImpl implements AuthService {
 	public ResponseEntity<Object> createUsers(UserDto userDto) {
 		try {
 			Set<Role> roles = new HashSet<>();
+			
+			Optional<userDetails> users = userRepo.findByEmail(userDto.getEmail());
+			if (users.isPresent()) {
+				return ResponseEntity.ok(MessageResponse.builder().status("email already exists")
+						.response(HttpStatus.PARTIAL_CONTENT.value()).build());			}
+
+			
 
 			if (userDto.getUserType().equalsIgnoreCase("ROLE_USER")) {
 				Role empRole = roleRepo.findByName(ERole.ROLE_USER);
@@ -78,8 +85,8 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public ResponseEntity<Object> validateLoginParam(UserDto userDTO) {
 		try {
-			userDetails users = userRepo.findByEmail(userDTO.getEmail());
-			if ((users.getUserStatus().equals("INACTIVE")) || (users.getUserStatus() == null)) {
+			Optional<userDetails> users = userRepo.findByEmail(userDTO.getEmail());
+			if ((users.get().getUserStatus().equals("INACTIVE")) || (users.get().getUserStatus() == null)) {
 				return ResponseEntity.ok(MessageResponse.builder().status("Unauthorized User")
 						.response(HttpStatus.BAD_REQUEST.value()).build());
 			}
@@ -98,12 +105,11 @@ public class AuthServiceImpl implements AuthService {
 
 			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
-//			System.out.println("bearer token:" + jwt + roles);
-			users.setUserStatus("ACTIVE");
+			users.get().setUserStatus("ACTIVE");
 
 			return ResponseEntity
-					.ok(loginResponse.builder().jwtToken("bearer token:" + jwt).email(users.getEmail()).name(users.getName())
-							.userName(users.getUserName()).number(users.getNumber()).userStatus(users.getUserStatus())
+					.ok(loginResponse.builder().jwtToken("bearer token:" + jwt).email(users.get().getEmail()).name(users.get().getName())
+							.userName(users.get().getUserName()).number(users.get().getNumber()).userStatus(users.get().getUserStatus())
 							.build());
 			
 		} catch (Exception e) {

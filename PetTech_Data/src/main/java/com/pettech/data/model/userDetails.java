@@ -39,6 +39,7 @@ inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private String gender;
 	private String password;
 	private String userStatus;
-
+	private byte[] profilePic;
+    
 
 }
