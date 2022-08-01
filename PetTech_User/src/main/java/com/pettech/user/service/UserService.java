@@ -22,7 +22,7 @@ public interface UserService {
 
 	public ResponseEntity<?> upLoad(ProductDetails petDetails, List< MultipartFile> file);
 	
-	public ResponseEntity<List<ProductDetails>> getSaleDetails(String id);
+	public ResponseEntity<List<ProductDetails>> getSaleDetails(String id,String petId);
 
 	public ResponseEntity<?> listHomePost();
 

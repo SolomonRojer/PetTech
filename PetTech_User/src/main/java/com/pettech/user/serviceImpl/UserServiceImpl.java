@@ -3,6 +3,7 @@ package com.pettech.user.serviceImpl;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,12 +62,14 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public ResponseEntity<?> upLoad(ProductDetails petDetails, List< MultipartFile> file) {
+		 UUID uuid=UUID.randomUUID();
 		for(MultipartFile multi : file) {
 			System.out.println(petDetails);
 		ProductDetails obj=new ProductDetails();
 		obj.setAddress(petDetails.getAddress());
 		obj.setDescription(petDetails.getDescription());
 		obj.setPetName(petDetails.getPetName());
+		obj.setPetId(uuid.toString());
 		try {
 			obj.setPetPhotos(multi.getBytes());
 		} catch (IOException e) {
@@ -82,10 +85,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseEntity<List<ProductDetails>> getSaleDetails(String id) {
+	public ResponseEntity<List<ProductDetails>> getSaleDetails(String id, String petId) {
 		Optional<userDetails> user = userRepository.findById(id);
 
-		List<ProductDetails> mySale = petSaleRepository.findByuserId(user.get());
+		List<ProductDetails> mySale = petSaleRepository.findByuserId(user.get(),petId);
 		  return ResponseEntity.status(HttpStatus.OK).body(mySale);
 	}
 
@@ -107,7 +110,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<?> listHomePost() {
 	
-		   List<ProductDetails> homePage = (List<ProductDetails>) petSaleRepository.findAll();
+		   List<ProductDetails> homePage = (List<ProductDetails>) petSaleRepository.findGroupByPet();
 		   return ResponseEntity.status(HttpStatus.OK).body(homePage);
  }
 }

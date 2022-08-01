@@ -22,6 +22,8 @@ public class ProductDetails {
 	@Id@ GeneratedValue(generator="system-uuid")
 	@GenericGenerator(name="system-uuid", strategy = "uuid")
 	private String id;
+	private String petId;
+
 	
 	@ManyToOne
 	@JoinColumn(name = "userDetails_id", nullable = false)

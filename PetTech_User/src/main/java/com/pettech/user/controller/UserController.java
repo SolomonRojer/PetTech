@@ -53,9 +53,9 @@ public class UserController {
 		return userService.upLoad(op.readValue(petDetails, ProductDetails.class), file);
 	}
 	
-	@GetMapping("/my/sale/details/{id}")
-	public ResponseEntity<List<ProductDetails>> mySaleDetails(@PathVariable String id) {
-		return userService.getSaleDetails(id);
+	@GetMapping("/my/sale/details/{id}/{petId}")
+	public ResponseEntity<List<ProductDetails>> mySaleDetails(@PathVariable String id, @PathVariable String petId) {
+		return userService.getSaleDetails(id, petId);
 
 	}
 	
