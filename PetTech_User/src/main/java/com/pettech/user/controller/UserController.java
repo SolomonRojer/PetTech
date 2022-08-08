@@ -1,5 +1,6 @@
 package com.pettech.user.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping("/profile/details/{id}")
-	public ResponseEntity<Optional<userDetails>> profileDetails(@PathVariable String id) {
+	public ResponseEntity<?> profileDetails(@PathVariable String id) {
 		return userService.getDetails(id);
 
 	}
@@ -43,8 +44,8 @@ public class UserController {
 	}
 
 	@PostMapping("/add/doc")
-	public ResponseEntity<?> upDateProfile(@RequestBody userDetails userDetails) {
-		return userService.upDate(userDetails);
+	public ResponseEntity<?> upDateProfile(@RequestParam("file") MultipartFile file, @RequestParam("id") String id) throws IOException {
+		return userService.upDate(file,id);
 	}
 	
 	@PostMapping("/sale/pet")
@@ -56,12 +57,10 @@ public class UserController {
 	@GetMapping("/my/sale/details/{id}/{petId}")
 	public ResponseEntity<List<ProductDetails>> mySaleDetails(@PathVariable String id, @PathVariable String petId) {
 		return userService.getSaleDetails(id, petId);
-
 	}
 	
 	@GetMapping("/sale/post/list")
 	public ResponseEntity<?> listHomePost() {
 		return userService.listHomePost();
-
 	}
 }

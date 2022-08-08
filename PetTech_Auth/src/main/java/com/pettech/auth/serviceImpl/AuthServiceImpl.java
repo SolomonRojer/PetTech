@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.core.env.Environment;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public class AuthServiceImpl implements AuthService {
 	AuthenticationManager authenticationManager;
 	@Autowired
 	JwtUtils jwtUtils;
+	@Autowired
+	Environment env;
 
 	@Override
 	public ResponseEntity<Object> createUsers(UserDto userDto) {
@@ -51,11 +54,9 @@ public class AuthServiceImpl implements AuthService {
 			
 			Optional<userDetails> users = userRepo.findByEmail(userDto.getEmail());
 			if (users.isPresent()) {
-				return ResponseEntity.ok(MessageResponse.builder().status("email already exists")
-						.response(HttpStatus.PARTIAL_CONTENT.value()).build());			}
-
-			
-
+				return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+						.message(env.getProperty("email.already.exists")).build());		
+			}
 			if (userDto.getUserType().equalsIgnoreCase("ROLE_USER")) {
 				Role empRole = roleRepo.findByName(ERole.ROLE_USER);
 				roles.add(empRole);
@@ -65,20 +66,20 @@ public class AuthServiceImpl implements AuthService {
 			}
 
 			if (!(userDto.getPassword().equals(userDto.getConfirmPassword()))) {
-				return ResponseEntity.ok(MessageResponse.builder().status("password does not match")
-						.response(HttpStatus.PARTIAL_CONTENT.value()).build());
+				return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+						.message(env.getProperty("password.does.not.match")).build());
 			}
 			userDetails user = userDetails.builder().name(userDto.getName()).email(userDto.getEmail())
 					.userStatus("ACTIVE").password(encoder.encode(userDto.getPassword())).gender(userDto.getGender())
 					.number(userDto.getNumber()).userName(userDto.getUserName()).roles(roles).build();
 
 			userRepo.save(user);
-			return ResponseEntity.ok(MessageResponse.builder().status("user added sucessfully")
-					.response(HttpStatus.OK.value()).data(user).build());
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+					.message(env.getProperty("user.added.sucessfully")).build());
 
 		} catch (Exception e) {
-			return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
-					.status("problem adding user").build());
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+					.message(env.getProperty("problem.adding.user")).build());
 		}
 	}
 
@@ -87,8 +88,8 @@ public class AuthServiceImpl implements AuthService {
 		try {
 			Optional<userDetails> users = userRepo.findByEmail(userDTO.getEmail());
 			if ((users.get().getUserStatus().equals("INACTIVE")) || (users.get().getUserStatus() == null)) {
-				return ResponseEntity.ok(MessageResponse.builder().status("Unauthorized User")
-						.response(HttpStatus.BAD_REQUEST.value()).build());
+				return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+						.message(env.getProperty("Unauthorized.User")).build());
 			}
 
 			Authentication authentication = authenticationManager.authenticate(
@@ -106,17 +107,16 @@ public class AuthServiceImpl implements AuthService {
 			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 					.collect(Collectors.toList());
 			users.get().setUserStatus("ACTIVE");
-
+			
 			return ResponseEntity
 					.ok(loginResponse.builder().jwtToken("bearer token:" + jwt).email(users.get().getEmail()).name(users.get().getName())
 							.userName(users.get().getUserName()).number(users.get().getNumber()).userStatus(users.get().getUserStatus())
 							.build());
 			
 		} catch (Exception e) {
-			System.out.println(e.getLocalizedMessage());
-			return ResponseEntity.ok(MessageResponse.builder().response(HttpStatus.BAD_REQUEST.value())
-					.status(e.getLocalizedMessage()).build());
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+					.message(env.getProperty("Bad.requst")).build());
 		}
-	}
-
+	}	
+	
 }

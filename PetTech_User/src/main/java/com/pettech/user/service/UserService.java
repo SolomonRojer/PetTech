@@ -1,5 +1,6 @@
 package com.pettech.user.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,12 +19,13 @@ public interface UserService {
 
 	public ResponseEntity<?> upDateUser(MultipartFile file, String fileDescription);
 
-	public ResponseEntity<?> upDate(userDetails userDetails);
 
 	public ResponseEntity<?> upLoad(ProductDetails petDetails, List< MultipartFile> file);
 	
 	public ResponseEntity<List<ProductDetails>> getSaleDetails(String id,String petId);
 
 	public ResponseEntity<?> listHomePost();
+
+	public ResponseEntity<?> upDate(MultipartFile file, String id) throws IOException;
 
 }

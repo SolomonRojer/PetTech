@@ -1,6 +1,7 @@
 com/pettech/data/model/userDetails$userDetailsBuilder.class
 com/pettech/data/model/ERole.class
 com/pettech/data/repo/UserRepository.class
+com/pettech/data/model/ProductDetails$ProductDetailsBuilder.class
 com/pettech/data/response/MessageResponse$MessageResponseBuilder.class
 com/pettech/data/repo/RoleRepository.class
 com/pettech/data/serviceImpl/UserDetailsServiceImpl.class
@@ -14,4 +15,6 @@ com/pettech/data/jwt/AuthEntryPointJwt.class
 com/pettech/data/jwt/AuthTokenFilter.class
 com/pettech/data/jwt/WebSecurityConfig.class
 com/pettech/data/PetTechDataApplication.class
+com/pettech/data/repo/PetSaleRepository.class
 com/pettech/data/dto/UserDto$ERole.class
+com/pettech/data/model/ProductDetails.class

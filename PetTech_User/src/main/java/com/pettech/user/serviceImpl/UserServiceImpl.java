@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	UserRepository userRepository;
-	
+	@Autowired
+	Environment env;
 	@Autowired
 	PetSaleRepository petSaleRepository;
 
@@ -33,7 +35,8 @@ public class UserServiceImpl implements UserService {
 		  return ResponseEntity.status(HttpStatus.OK).body(user);
 	}
 
-
+//	return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+//			.message(env.getProperty("password.does.not.match")).build());
 
 	@Override
 	public ResponseEntity<?> upDateUser(MultipartFile file, String fileDescription) {
@@ -48,23 +51,10 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-
-
-	@Override
-	public ResponseEntity<?> upDate(userDetails userDetails) {
-		Optional<userDetails> user = userRepository.findById(userDetails.getId());
-		userDetails.setProfilePic(user.get().getProfilePic());
-		userRepository.save(userDetails);
-		return null;
-	}
-
-
-	
 	@Override
 	public ResponseEntity<?> upLoad(ProductDetails petDetails, List< MultipartFile> file) {
 		 UUID uuid=UUID.randomUUID();
 		for(MultipartFile multi : file) {
-			System.out.println(petDetails);
 		ProductDetails obj=new ProductDetails();
 		obj.setAddress(petDetails.getAddress());
 		obj.setDescription(petDetails.getDescription());
@@ -113,6 +103,16 @@ public class UserServiceImpl implements UserService {
 		   List<ProductDetails> homePage = (List<ProductDetails>) petSaleRepository.findGroupByPet();
 		   return ResponseEntity.status(HttpStatus.OK).body(homePage);
  }
+
+
+
+	@Override
+	public ResponseEntity<?> upDate(MultipartFile file, String id) throws IOException {
+		Optional<userDetails> user = userRepository.findById(id);
+		user.get().setProfilePic(file.getBytes());
+		userRepository.save(user.get());
+		return null;
+	}
 }
 
 
