@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -35,6 +36,8 @@ public class userDetails {
 inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 	private String email;
+	private String discription;
+	private String address; 
 	private String number;
 	private String gender;
 	private String password;

@@ -11,6 +11,8 @@ public class UserDto {
 	private String gender;
 	private String password;
 	private String confirmPassword;
+	private String discription;
+	private String address;
 	public enum ERole {
 		ROLE_USER,
 	    

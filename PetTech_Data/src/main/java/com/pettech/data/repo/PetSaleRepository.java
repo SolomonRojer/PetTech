@@ -19,5 +19,6 @@ public interface PetSaleRepository extends CrudRepository<ProductDetails, String
 	@Query(value = "select * from product_details GROUP BY pet_id", nativeQuery = true)
 	List<ProductDetails> findGroupByPet();
 
+	//boolean userId(String id);
 }
 //select * from petstore.product_details where user_details_id ="402882e082482ead0182483281870000";

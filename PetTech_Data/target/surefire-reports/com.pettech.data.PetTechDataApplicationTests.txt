@@ -1,4 +1,9 @@
 -------------------------------------------------------------------------------
 Test set: com.pettech.data.PetTechDataApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.929 s - in com.pettech.data.PetTechDataApplicationTests
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.985 s <<< FAILURE! - in com.pettech.data.PetTechDataApplicationTests
+contextLoads  Time elapsed: 0.008 s  <<< ERROR!
+java.lang.IllegalStateException: Failed to load ApplicationContext
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jwtUtils': Injection of autowired dependencies failed; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'auth.token.jwtSecret' in value "${auth.token.jwtSecret}"
+Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'auth.token.jwtSecret' in value "${auth.token.jwtSecret}"
+

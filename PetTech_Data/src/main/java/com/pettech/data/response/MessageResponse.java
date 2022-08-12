@@ -12,6 +12,7 @@ public class MessageResponse {
 	private Object data;
 	private String message;
 	
+	
 	public MessageResponse(int status, int response, Object data) {
 		super();
 		this.status = status;

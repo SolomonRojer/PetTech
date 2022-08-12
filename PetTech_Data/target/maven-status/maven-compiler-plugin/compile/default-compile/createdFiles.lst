@@ -6,6 +6,9 @@ com/pettech/data/response/MessageResponse$MessageResponseBuilder.class
 com/pettech/data/repo/RoleRepository.class
 com/pettech/data/serviceImpl/UserDetailsServiceImpl.class
 com/pettech/data/response/service/UserDetailsImpl.class
+com/pettech/data/model/UserPostDetails.class
+com/pettech/data/model/UserPostDetails$UserPostDetailsBuilder.class
+com/pettech/data/repo/PetPostRepository.class
 com/pettech/data/dto/UserDto.class
 com/pettech/data/model/userDetails.class
 com/pettech/data/model/Role.class

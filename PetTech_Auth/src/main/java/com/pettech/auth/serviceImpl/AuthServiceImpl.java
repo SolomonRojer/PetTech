@@ -66,19 +66,20 @@ public class AuthServiceImpl implements AuthService {
 			}
 
 			if (!(userDto.getPassword().equals(userDto.getConfirmPassword()))) {
-				return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+				return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.OK.value())
 						.message(env.getProperty("password.does.not.match")).build());
 			}
 			userDetails user = userDetails.builder().name(userDto.getName()).email(userDto.getEmail())
 					.userStatus("ACTIVE").password(encoder.encode(userDto.getPassword())).gender(userDto.getGender())
-					.number(userDto.getNumber()).userName(userDto.getUserName()).roles(roles).build();
+					.number(userDto.getNumber()).userName(userDto.getUserName()).address(userDto.getAddress())
+					.discription(userDto.getDiscription()).roles(roles).build();
 
 			userRepo.save(user);
-			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.OK.value())
 					.message(env.getProperty("user.added.sucessfully")).build());
 
 		} catch (Exception e) {
-			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.PARTIAL_CONTENT.value())
 					.message(env.getProperty("problem.adding.user")).build());
 		}
 	}

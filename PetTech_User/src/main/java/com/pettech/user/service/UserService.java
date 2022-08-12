@@ -10,22 +10,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pettech.data.model.ProductDetails;
 import com.pettech.data.model.userDetails;
+import com.pettech.data.response.MessageResponse;
 
 @Service
 public interface UserService {
 
 
-	public ResponseEntity<Optional<userDetails>> getDetails(String id);
+	public ResponseEntity<MessageResponse> getDetails(String id);
 
-	public ResponseEntity<?> upDateUser(MultipartFile file, String fileDescription);
+	public ResponseEntity<?> upDateUser(MultipartFile file, userDetails fileDescription,String id);
 
 
 	public ResponseEntity<?> upLoad(ProductDetails petDetails, List< MultipartFile> file);
 	
-	public ResponseEntity<List<ProductDetails>> getSaleDetails(String id,String petId);
+	public ResponseEntity<MessageResponse> getSaleDetails(String id,String petId);
 
 	public ResponseEntity<?> listHomePost();
 
+//	public ResponseEntity<?> upDate(userDetails userDetails, MultipartFile file, String id) throws IOException;
+
 	public ResponseEntity<?> upDate(MultipartFile file, String id) throws IOException;
+
 
 }
