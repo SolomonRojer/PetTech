@@ -20,5 +20,5 @@ public interface UserPetPostRepository extends CrudRepository<UserPostDetails, S
 	List<UserPostDetails> findGroupByPet();
 
 	@Query(value = "select * from user_post_details where post_id= :id", nativeQuery = true)
-	UserPostDetails findByPetId(String id);
+	List<UserPostDetails> findByPetId(String id);
 }

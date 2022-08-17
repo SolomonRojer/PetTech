@@ -1,5 +1,7 @@
 package com.pettech.user.service;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,7 +12,7 @@ import com.pettech.data.response.MessageResponse;
 @Service
 public interface PostUserService {
 
-	public ResponseEntity<?> upLoad(UserPostDetails readValue, MultipartFile file);
+	public ResponseEntity<?> upLoad(UserPostDetails readValue, List<MultipartFile> file);
 
 	public ResponseEntity<?> getPostDetails(String id, String postId);
 

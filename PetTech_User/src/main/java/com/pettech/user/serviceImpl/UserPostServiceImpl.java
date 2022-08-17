@@ -32,30 +32,32 @@ public class UserPostServiceImpl implements PostUserService {
 	@Autowired
 	UserPetPostRepository userPetPostRepository;
 
+//	upload my pet post @PostMapping("/upload/pet/post")
 	@Override
-	public ResponseEntity<?> upLoad(UserPostDetails readValue, MultipartFile file) {
+	public ResponseEntity<?> upLoad(UserPostDetails readValue, List<MultipartFile> file) {
 		try {
 			UUID uuid = UUID.randomUUID();
-
-			UserPostDetails post = new UserPostDetails();
-			post.setDescription(readValue.getDescription());
-			post.setLocation(readValue.getLocation());
-			post.setTitle(readValue.getTitle());
-			post.setHashtag(readValue.getHashtag());
-			post.setPostId(uuid.toString());
-			try {
-				post.setPetPhoto(file.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
+			for (MultipartFile multi : file) {
+				UserPostDetails post = new UserPostDetails();
+				post.setDescription(readValue.getDescription());
+				post.setLocation(readValue.getLocation());
+				post.setTitle(readValue.getTitle());
+				post.setHashtag(readValue.getHashtag());
+				post.setPostId(uuid.toString());
+				try {
+					post.setPetPhoto(multi.getBytes());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				post.setUserId(readValue.getUserId());
+				petPostRepository.save(post);
 			}
-			post.setUserId(readValue.getUserId());
-			petPostRepository.save(post);
-			return ResponseEntity.ok(MessageResponse.builder().data(post).status(HttpStatus.OK.value())
-					.message(env.getProperty("sale.pet.posted.successfully")).build());
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.OK.value())
+					.message(env.getProperty("upload.my.pet.post.successfully")).build());
 
 		} catch (Exception e) {
 			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
-					.message(env.getProperty("my.sale.list.faild")).build());
+					.message(env.getProperty("upload.my.pet.post.faild")).build());
 		}
 	}
 
@@ -92,9 +94,8 @@ public class UserPostServiceImpl implements PostUserService {
 	@Override
 	public ResponseEntity<MessageResponse> deleteMyPet(String id) {
 		try {
-
-			UserPostDetails result = userPetPostRepository.findByPetId(id);
-			userPetPostRepository.delete(result);
+			List<UserPostDetails> result = userPetPostRepository.findByPetId(id);
+			userPetPostRepository.deleteAll(result);
 			return ResponseEntity.ok(MessageResponse.builder().data(result).status(HttpStatus.OK.value())
 					.message(env.getProperty("my.sale.list.successfully")).build());
 

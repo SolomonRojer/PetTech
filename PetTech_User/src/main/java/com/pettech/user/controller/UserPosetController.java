@@ -1,5 +1,7 @@
 package com.pettech.user.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,9 +30,10 @@ public class UserPosetController {
 	@Autowired
 	private PostUserService postUserService;
 
+//	upload my pet post
 	@PostMapping("/upload/pet/post")
 	public ResponseEntity<?> upLoadPet(@RequestPart("petPostDetails") String petPostDetails,
-			@RequestParam("file") MultipartFile file) throws JsonMappingException, JsonProcessingException {
+			@RequestParam("file") List<MultipartFile> file) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper pos = new ObjectMapper();
 		return postUserService.upLoad(pos.readValue(petPostDetails, UserPostDetails.class), file);
 	}
