@@ -19,10 +19,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPostDetails {
-	@Id@ GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Id
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
 	private String id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "userDetails_id", nullable = false)
 	private userDetails userId;

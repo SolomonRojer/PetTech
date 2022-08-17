@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pettech.data.model.UserPostDetails;
+import com.pettech.data.response.MessageResponse;
 
 @Service
 public interface PostUserService {
@@ -13,5 +14,8 @@ public interface PostUserService {
 
 	public ResponseEntity<?> getPostDetails(String id, String postId);
 
-	
+	public ResponseEntity<?> listHomePetPost();
+
+	public ResponseEntity<MessageResponse> deleteMyPet(String id);
+
 }

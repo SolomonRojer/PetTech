@@ -11,11 +11,11 @@ import com.pettech.data.model.UserPostDetails;
 import com.pettech.data.model.userDetails;
 
 @Repository
-public interface PetPostRepository  extends CrudRepository<userDetails, String> {
+public interface PetPostRepository extends CrudRepository<userDetails, String> {
 
 	void save(UserPostDetails details);
 
 	@Query(value = "select * from user_post_details where user_details_id= :id AND post_id=:postId", nativeQuery = true)
-	List<UserPostDetails> findByuserId(@Param("id")userDetails id,String postId);
+	List<UserPostDetails> findByuserId(@Param("id") userDetails id, String postId);
 
 }

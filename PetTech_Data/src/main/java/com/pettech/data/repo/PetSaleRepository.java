@@ -14,11 +14,11 @@ import com.pettech.data.model.userDetails;
 public interface PetSaleRepository extends CrudRepository<ProductDetails, String> {
 
 	@Query(value = "select * from product_details where user_details_id= :id AND pet_id=:petId", nativeQuery = true)
-	List<ProductDetails> findByuserId(@Param("id")userDetails id,String petId);
+	List<ProductDetails> findByuserId(@Param("id") userDetails id, String petId);
 
 	@Query(value = "select * from product_details GROUP BY pet_id", nativeQuery = true)
 	List<ProductDetails> findGroupByPet();
 
-	//boolean userId(String id);
+	@Query(value = "select * from product_details where pet_id= :id", nativeQuery = true)
+	List<ProductDetails> findBypetId(@Param("id") String id);
 }
-//select * from petstore.product_details where user_details_id ="402882e082482ead0182483281870000";

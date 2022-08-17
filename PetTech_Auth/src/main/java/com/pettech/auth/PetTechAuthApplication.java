@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
-
 @PropertySources({ @PropertySource("classpath:message.properties") })
 @SpringBootApplication(scanBasePackages = "com.pettech")
 public class PetTechAuthApplication {

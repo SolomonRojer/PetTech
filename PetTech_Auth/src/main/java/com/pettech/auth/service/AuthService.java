@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.pettech.data.dto.UserDto;
 
 @Service
-public interface AuthService  {
+public interface AuthService {
 
 	ResponseEntity<Object> createUsers(UserDto userDto);
 

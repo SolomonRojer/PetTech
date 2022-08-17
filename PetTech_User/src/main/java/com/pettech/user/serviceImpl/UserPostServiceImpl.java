@@ -59,6 +59,7 @@ public class UserPostServiceImpl implements PostUserService {
 		}
 	}
 
+//	@GetMapping("/my/post/pet/list/{id}/{postId}") on profile my post pet list
 	@Override
 	public ResponseEntity<MessageResponse> getPostDetails(String id, String postId) {
 		try {
@@ -66,7 +67,37 @@ public class UserPostServiceImpl implements PostUserService {
 			List<UserPostDetails> myPost = userPetPostRepository.findByuserId(user.get(), postId);
 
 			return ResponseEntity.ok(MessageResponse.builder().data(myPost).status(HttpStatus.OK.value())
+					.message(env.getProperty("my.posted.pet.list.successfully")).build());
+		} catch (Exception e) {
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+					.message(env.getProperty("my.posted.pet.list.faild")).build());
+		}
+	}
+
+//	@GetMapping("/pet/list") all pet post list on home page
+	@Override
+	public ResponseEntity<?> listHomePetPost() {
+		try {
+			List<UserPostDetails> homePage = (List<UserPostDetails>) userPetPostRepository.findGroupByPet();
+			return ResponseEntity.ok(MessageResponse.builder().data(homePage).status(HttpStatus.OK.value())
+					.message(env.getProperty("post.list.home.page.successfully")).build());
+
+		} catch (Exception e) {
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+					.message(env.getProperty("post.list.home.page.faild")).build());
+		}
+	}
+
+//	@DeleteMapping(value = "/delete/my/pet/{id}" detele my pet post
+	@Override
+	public ResponseEntity<MessageResponse> deleteMyPet(String id) {
+		try {
+
+			UserPostDetails result = userPetPostRepository.findByPetId(id);
+			userPetPostRepository.delete(result);
+			return ResponseEntity.ok(MessageResponse.builder().data(result).status(HttpStatus.OK.value())
 					.message(env.getProperty("my.sale.list.successfully")).build());
+
 		} catch (Exception e) {
 			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
 					.message(env.getProperty("my.sale.list.faild")).build());

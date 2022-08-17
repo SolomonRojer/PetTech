@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pettech.data.model.ProductDetails;
@@ -123,39 +124,40 @@ public class UserServiceImpl implements UserService {
 			List<ProductDetails> mySale = petSaleRepository.findByuserId(user.get(), petId);
 
 			return ResponseEntity.ok(MessageResponse.builder().data(mySale).status(HttpStatus.OK.value())
-					.message(env.getProperty("my.sale.list.successfully")).build());
+					.message(env.getProperty("get.sale.details.successfully")).build());
 		} catch (Exception e) {
 			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
-					.message(env.getProperty("my.sale.list.faild")).build());
+					.message(env.getProperty("get.sale.details.faild")).build());
 		}
 	}
 
-//	@Override
-//	public ResponseEntity<?> listDesignation() {
-//		try {
-//			List<Designation> list = designationRepo.findAll();
-//			return ResponseEntity.ok(MessageResponse.builder().message(env.getProperty("designation.fetched"))
-//					.status(HttpStatus.OK.value()).response(list).build());
-//		} catch (Exception e) {
-//			LogRequest info=LogRequest.builder().apiName("admin/list/designation").logInfo(e.getLocalizedMessage().toString()).statusCode("400").createdTime(now.toString()).build();
-//			loginfo.saveLogInformation(info);
-//			return ResponseEntity.ok(PaginationListResponse.builder().status(HttpStatus.BAD_REQUEST.value())
-//					.message(env.getProperty("Problem.designation")).build());
-//		}
-// return ResponseEntity.status(HttpStatus.OK).body(user);
-//	}
-
-//	@GetMapping("/sale/post/list")
+//	@GetMapping("/sale/post/list") on sale home page
 	@Override
 	public ResponseEntity<?> listHomePost() {
 		try {
 			List<ProductDetails> homePage = (List<ProductDetails>) petSaleRepository.findGroupByPet();
 			return ResponseEntity.ok(MessageResponse.builder().data(homePage).status(HttpStatus.OK.value())
-					.message(env.getProperty("my.sale.list.successfully")).build());
+					.message(env.getProperty("post.on.sale.page.successfully")).build());
 
 		} catch (Exception e) {
 			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
-					.message(env.getProperty("my.sale.list.faild")).build());
+					.message(env.getProperty("post.on.sale.page.faild")).build());
+		}
+	}
+
+//	@DeleteMapping(value = "/delete/sale/pet/{id}  detele sale pet post
+	@Override
+	@Transactional
+	public ResponseEntity<MessageResponse> deleteSalePet(String id) {
+		try {
+			List<ProductDetails> result = petSaleRepository.findBypetId(id);
+			petSaleRepository.deleteAll(result);
+			return ResponseEntity.ok(MessageResponse.builder().data(result).status(HttpStatus.OK.value())
+					.message(env.getProperty("delete.sale.pet.successfully")).build());
+
+		} catch (Exception e) {
+			return ResponseEntity.ok(MessageResponse.builder().status(HttpStatus.BAD_REQUEST.value())
+					.message(env.getProperty("delete.sale.pet.faild")).build());
 		}
 	}
 }

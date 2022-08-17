@@ -2,15 +2,14 @@ package com.pettech.user.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -22,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pettech.data.model.ProductDetails;
 import com.pettech.data.model.userDetails;
+import com.pettech.data.response.MessageResponse;
 import com.pettech.user.service.UserService;
 
 @CrossOrigin
@@ -41,33 +41,44 @@ public class UserController {
 
 //	profile photo update
 	@PostMapping("/profile/photo/update")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestPart("userDetails")  String userDetails,@RequestPart("id")  String id) throws JsonMappingException, JsonProcessingException {
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file,
+			@RequestPart("userDetails") String userDetails, @RequestPart("id") String id)
+			throws JsonMappingException, JsonProcessingException {
 		ObjectMapper op = new ObjectMapper();
-		return userService.upDateUser(file, op.readValue(userDetails, userDetails.class),id);
+		return userService.upDateUser(file, op.readValue(userDetails, userDetails.class), id);
 	}
 
 //	first time user add profile photo for user
 	@PostMapping("/add/doc")
-	public ResponseEntity<?> upDateProfile(@RequestParam("file") MultipartFile file, @RequestParam("id") String id) throws IOException {
-		return userService.upDate(file,id);
+	public ResponseEntity<?> upDateProfile(@RequestParam("file") MultipartFile file, @RequestParam("id") String id)
+			throws IOException {
+		return userService.upDate(file, id);
 	}
-	
+
 //	new pet sale API
 	@PostMapping("/sale/pet")
-	public ResponseEntity<?> upLoadPet( @RequestPart("petDetails") String petDetails, @RequestPart("file") List<MultipartFile> file) throws JsonMappingException, JsonProcessingException {
+	public ResponseEntity<?> upLoadPet(@RequestPart("petDetails") String petDetails,
+			@RequestPart("file") List<MultipartFile> file) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper op = new ObjectMapper();
 		return userService.upLoad(op.readValue(petDetails, ProductDetails.class), file);
 	}
-	
+
 //	on profile my sale times list
 	@GetMapping("/my/sale/details/{id}/{petId}")
-	public ResponseEntity<?>mySaleDetails(@PathVariable String id, @PathVariable String petId) {
+	public ResponseEntity<?> mySaleDetails(@PathVariable String id, @PathVariable String petId) {
 		return userService.getSaleDetails(id, petId);
 	}
-	
+
 //	on sale home page
 	@GetMapping("/sale/post/list")
 	public ResponseEntity<?> listHomePost() {
 		return userService.listHomePost();
 	}
+
+//	detele sale pet post
+	@DeleteMapping(value = "/delete/sale/pet/{id}", produces = { "application/json" })
+	public ResponseEntity<MessageResponse> deleteSalePet(@PathVariable("id") String id) throws Exception {
+		return userService.deleteSalePet(id);
+	}
+
 }

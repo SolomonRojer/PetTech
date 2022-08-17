@@ -11,7 +11,8 @@ import com.pettech.data.model.Role;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 //	Optional<Role> findByName(ERole roleAdmin);
 	Role findByName(ERole roleEmployee);
-	@Query(value="select p from Role p where p.name='ROLE_ADMIN' OR p.name='ROLE_MANAGER'" )
+
+	@Query(value = "select p from Role p where p.name='ROLE_ADMIN' OR p.name='ROLE_MANAGER'")
 //	Role findByName(ERole roleEmployee);
 	List<Role> findByRole();
 
